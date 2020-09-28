@@ -22,7 +22,6 @@ hdp_analysis <- readRDS("hdp_analysis") # Data not publicly available
 ####---- 1. Write Function to Calculate Validation Parameters ----####
 
 # Write a function - compare hospital discharge (HDD) to medical record (MR)
-
 validation.param.function <- function(hdd_var, mr_var) {
                                 a_v <- sum(hdp_analysis[,hdd_var] == 1 & hdp_analysis[,mr_var] == 1) # TP
                                 b_v <- sum(hdp_analysis[,hdd_var] == 1 & hdp_analysis[,mr_var] == 0) # FP
@@ -66,14 +65,13 @@ validation.param.function <- function(hdd_var, mr_var) {
                               npv_up <- round((binom.confint(d_v, (c_v + d_v), 
                                                              conf.level = 0.95, methods = "exact")$upper)*100, 1)
                               
-                              
-                              
                               # Return all output --
                               return(list(se, se_low, se_up,
                                           sp, sp_low, sp_up,
                                           ppv, ppv_low, ppv_up, 
                                           npv, npv_low, npv_up))
 }
+
 
 
 
@@ -87,7 +85,6 @@ names(t.out1) <- c("hdd_var", "mr_var", # Name table columns
                    "PPV", "PPV_Lower", "PPV_Upper",
                    "NPV", "NPV_Lower", "NPV_Upper")
 
-
 t.out1$hdd_var <- c("DX_AllHTN", "DX_AllHTN_noUnsp", "DX_HELLP", # Vector with HDD var names
                     "DX_Eclampsia", "DX_SeverePRE", "DX_MildPRE", 
                     "DX_SIPRE", "DX_ChronicHTN", "DX_GestHTN")
@@ -95,7 +92,6 @@ t.out1$hdd_var <- c("DX_AllHTN", "DX_AllHTN_noUnsp", "DX_HELLP", # Vector with H
 t.out1$mr_var <- c("IDPREG_AllHTN_NoUnspec", "IDPREG_AllHTN_NoUnspec", # Vector with MR var names - same order as HDD
                    "IDPREG_HELLP", "IDPREG_Eclampsia", "IDPREG_SeverePRE", 
                    "IDPREG_MildPRE", "IDPREG_SIPRE","IDPREG_ChronicHTN", "IDPREG_GestHTN")
-
 
 for (i in (1:9)) { # Fill the table 
       t.out1[i, c(3:14)] <- validation.param.function(t.out1$hdd_var[i], t.out1$mr_var[i])
@@ -118,7 +114,7 @@ bias.function <- function(hdd_var, mr_var) {
                       total_MR <- a_v + c_v
                       n <- a_v + b_v + c_v + d_v
                       
-                      # Prevalence HDD 
+                      # Prevalence HDD--- 
                       prev_HDD <- (total_HDD /(n))*100 #total HDD / all
                       
                       prev_HDD_round <- paste0(round(prev_HDD, 1),"%") # Rounding to one decimal places
@@ -130,8 +126,7 @@ bias.function <- function(hdd_var, mr_var) {
                       prev_HDD_up <- round((binom.confint(total_HDD, n, 
                                                      conf.level = 0.95, methods = "exact")$upper)*100, 1)
                       
-                      # Prevalence MR
-                      
+                      # Prevalence MR---
                       prev_MR <- (total_MR /(n))*100 #total MR / all
                       
                       prev_MR_round <- paste0(round(prev_MR, 1),"%") # Rounding to one decimal places
@@ -142,14 +137,14 @@ bias.function <- function(hdd_var, mr_var) {
                       prev_MR_up <- round((binom.confint(total_MR, n, 
                                                           conf.level = 0.95, methods = "exact")$upper)*100, 1)
                       
-                      # Expected Bias
-                      
+                      # Expected Bias---
                       PR_Bias <- round(prev_MR/prev_HDD, 1)
+                      
                       PD_Bias <- paste0(round(prev_MR - prev_HDD, 1), "%")
                       
                       case_diff <- total_MR - total_HDD
                       
-                      # Return output
+                      # Return output---
                       return(list(total_HDD, total_MR,
                                   prev_HDD_round, prev_HDD_low, prev_HDD_up,
                                   prev_MR_round, prev_MR_low, prev_MR_up,
@@ -180,10 +175,8 @@ t.out2$mr_var <- c("IDPREG_AllHTN_NoUnspec", "IDPREG_AllHTN_NoUnspec", # Vector 
                    "IDPREG_MildPRE", "IDPREG_SIPRE","IDPREG_ChronicHTN", 
                    "IDPREG_GestHTN")
 
-
 for (i in (1:13)) { # Fill the table
   t.out2[i, c(3:13)] <- bias.function(t.out2$hdd_var[i], t.out2$mr_var[i])
 }
-
 
 #View(t.out2)
