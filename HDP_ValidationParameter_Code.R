@@ -13,6 +13,7 @@
 
 library(dplyr)
 library(binom)
+library(fsmb)
 
 
 hdp_analysis <- readRDS("hdp_analysis") # Data not publicly available
@@ -173,7 +174,7 @@ t.out2$mr_var <- c("IDPREG_AllHTN_NoUnspec", "IDPREG_AllHTN_NoUnspec", # Vector 
                    "IDPREG_MildPRE", "IDPREG_SIPRE","IDPREG_ChronicHTN", 
                    "IDPREG_GestHTN")
 
-for (i in (1:13)) { # Fill the table
+for (i in (1:9)) { # Fill the table
   t.out2[i, c(3:13)] <- bias.function(t.out2$hdd_var[i], t.out2$mr_var[i])
 }
 
