@@ -13,6 +13,7 @@
 
 library(dplyr)
 library(binom)
+library(fsmb)
 
 hdp_analysis <- readRDS("hdp_analysis") # Data not publicly available
 
@@ -137,6 +138,7 @@ bias.function <- function(hdd_var, mr_var) {
                                                           conf.level = 0.95, methods = "exact")$upper)*100, 1)
                       
                       # Expected Bias---
+                      
                       PR_Bias <- round(prev_MR/prev_HDD, 1)
                       
                       PD_Bias <- paste0(round(prev_MR - prev_HDD, 1), "%")
@@ -147,10 +149,8 @@ bias.function <- function(hdd_var, mr_var) {
                       return(list(total_HDD, total_MR,
                                   prev_HDD_round, prev_HDD_low, prev_HDD_up,
                                   prev_MR_round, prev_MR_low, prev_MR_up,
-                                  PR_Bias, PD_Bias,
-                                  case_diff))
+                                  PR_Bias, PD_Bias, case_diff))
 }
-
 
 
 
@@ -162,8 +162,7 @@ names(t.out2) <- c("hdd_var", "mr_var", # Name table columns
                    "total_HDD", "total_MR",
                    "prev_HDD", "prev_HDD_low", "prev_HDD_up",
                    "prev_MR", "prev_MR_low", "prev_MR_up",
-                   "PR_Bias", "PD_Bias",
-                   "case_diff")
+                   "PR_Bias", "PD_Bias","case_diff")
 
 t.out2$hdd_var <- c("DX_AllHTN", "DX_AllHTN_noUnsp", "DX_HELLP", # Vector with HDD var names
                     "DX_Eclampsia", "DX_SeverePRE", "DX_MildPRE", 
